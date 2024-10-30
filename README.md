@@ -22,3 +22,16 @@ Configurar o Frontend: Navegue até o diretório do frontend em EstacionamentoAp
 Execute os seguintes comandos no terminal: "npm install", "npm run build" e em seguida "npm start". Isso irá construir a aplicação React e iniciar o servidor de desenvolvimento.
 
 Acessar a Aplicação: Após iniciar o frontend, abra seu navegador e acesse a aplicação. O frontend deverá estar funcional e pronto para uso
+
+
+O video abaixo mostra os passos para rodar a aplicação a partir da execução do script DataBaseServer.py. Mostra também a aplicação funcionando.
+
+https://github.com/user-attachments/assets/f80314d6-2ee5-41e4-8009-7e6f6246b822
+
+
+
+
+
+
+
+
