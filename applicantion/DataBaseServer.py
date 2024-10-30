@@ -24,8 +24,6 @@ class DataBaseServer:
         try:
             if self.conn:
                 cursor = self.conn.cursor()
-                
-                # Cria a tabela de veículos
                 cursor.execute("""
                     CREATE TABLE IF NOT EXISTS vehicles (
                         id SERIAL PRIMARY KEY,
@@ -41,8 +39,8 @@ class DataBaseServer:
                 self.conn.commit()
                 print("Tabela 'vehicles' criada com sucesso.")
                 return 'created'
-
         except Error as e:
+            self.conn.rollback()  # Adicionado para evitar transação abortada
             print(f'Erro: {e}')
             return 'error'
         finally:
@@ -60,8 +58,8 @@ class DataBaseServer:
                 self.conn.commit()
                 print("Veículo registrado com sucesso.")
                 return 'registered'
-        
         except Error as e:
+            self.conn.rollback()  # Adicionado para evitar transação abortada
             print(f'Erro: {e}')
             return 'error'
         finally:
@@ -80,8 +78,8 @@ class DataBaseServer:
                 self.conn.commit()
                 print("Saída do veículo registrada.")
                 return 'exit_recorded'
-        
         except Error as e:
+            self.conn.rollback()  # Adicionado para evitar transação abortada
             print(f'Erro: {e}')
             return 'error'
         finally:
@@ -95,10 +93,9 @@ class DataBaseServer:
                 cursor.execute("SELECT * FROM vehicles ORDER BY entry_time DESC;")
                 history = cursor.fetchall()
                 print("Histórico de veículos obtido.")
-                print(history)
                 return history
-        
         except Error as e:
+            self.conn.rollback()  # Adicionado para evitar transação abortada
             print(f'Erro: {e}')
             return 'error'
         finally:
@@ -119,36 +116,28 @@ class DataBaseServer:
                 payment_status = "Já realizou o pagamento." if vehicle[7] else "Não foi pago."
                 
                 return f"{current_status} {payment_status}"
-    
         except Error as e:
+            self.conn.rollback()  # Adicionado para evitar transação abortada
             print(f'Erro: {e}')
             return 'error'
         finally:
             if self.conn:
                 cursor.close()
 
-    def vehicle_exists(conn, plate):
+    def vehicle_exists(self, plate):
         try:
-            cursor = conn.cursor()
-            
-            # Consulta SQL para verificar se a placa existe
+            cursor = self.conn.cursor()
             cursor.execute("SELECT COUNT(*) FROM vehicles WHERE plate = %s", (plate,))
             count = cursor.fetchone()[0]
-            
-            # Fechar o cursor
-            cursor.close()
-
-            # Retorna True se a placa existir, caso contrário, False
             return count > 0
-        except Exception as e:
+        except Error as e:
             print("Erro ao verificar o veículo:", e)
             return False
+        finally:
+            cursor.close()
 
 if __name__ == '__main__':
     db = DataBaseServer()
     db.create_tables()
     # Exemplo de registro de um veículo
     #db.register_vehicle("ABC1234", "John Doe", "Honda Civic", "Blue", "2024-10-28 08:30:00")
-    #plate_to_check = "00003"
-    #status_message = db.check_vehicle_status(plate_to_check)
-    #print(status_message)
