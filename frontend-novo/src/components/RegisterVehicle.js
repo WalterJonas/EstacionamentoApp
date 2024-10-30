@@ -32,14 +32,17 @@ function RegisterVehicle() {
         setMessage("Esse veículo já está registrado no estacionamento.");
         return;
       }
-
+      
+      const { DateTime } = require("luxon");
+      const entry_time = DateTime.local().toFormat("dd-MM-yyyy HH:mm"); // Data e hora local
+      
       // Registrar o novo veículo
       const response = await axios.post("http://127.0.0.1:5001/api/register_vehicle", {
         plate,
         owner,
         model,
         color,
-        entry_time: new Date().toISOString(),
+        entry_time,
       });
 
       setMessage(response.data.message);
