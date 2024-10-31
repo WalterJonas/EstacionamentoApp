@@ -21,7 +21,7 @@ function ExitVehicle() {
     try {
       const response = await axios.post("http://127.0.0.1:5001/api/exit_vehicle", {
         plate: plate,
-        exit_time: new Date().toISOString(),
+        exit_time: new Date().toLocaleString(),
         paid: true,
       });
       setMessage(response.data.message);
